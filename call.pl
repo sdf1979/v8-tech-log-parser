@@ -35,23 +35,6 @@ struct EventCall => {
     cpu => '$'
 };
 
-sub format_with_spaces {
-    my $num = shift;
-    my $negative = $num < 0 ? '-' : '';
-    my $abs = abs($num);
-    my ($int, $frac) = split(/\./, $abs, 2);
-    my $formatted = '';
-    my $len = length($int);
-    for (my $i = 0; $i < $len; $i++) {
-        $formatted .= substr($int, $i, 1);
-        if (($len - $i - 1) % 3 == 0 && $i != $len - 1) {
-            $formatted .= ' ';
-        }
-    }
-    $formatted .= ".$frac" if defined $frac;
-    return $negative . $formatted;
-}
-
 sub EventCallNew {
     my $event_call = EventCall->new();
     $event_call->descr('');
@@ -77,6 +60,26 @@ sub print_to_tj_format {
     return "$3$2$1$4:$5";
 }
 
+sub usage {
+    print <<"END_USAGE";
+Usage: $0 [options]
+
+Options:
+  --help              Show this help message
+  --dir=DIR           Directory to search (default: .)
+  --fmt=FORMAT        File format: txt, html (default: txt)
+  --cpu-cum-lt=FLOAT  Max CPU cumulative value (default: 100.0)
+  --date-ge=DATE      Start date, format: DD-MM-YY HH:MM (default: no filter)
+  --date-le=DATE      End date, format: DD-MM-YY HH:MM (default: no filter)
+  --title=TITLE       Title filter (default: empty)
+
+Examples:
+  $0 --dir=/var/log --fmt=txt --cpu-cum-lt=80
+END_USAGE
+  exit 0;
+}
+usage() unless @ARGV;
+
 my %settings = (
     dir => '.',
     fmt => 'txt',
@@ -85,14 +88,17 @@ my %settings = (
     date_le => '99-99-99 99:99',
     title => '',
 );
+my $help = 0;
 GetOptions(
+    'help|?' => \$help,
     'dir=s' => \$settings{dir},
     'fmt=s' => \$settings{fmt},
     'cpu-cum-lt=f' => \$settings{cpu_cum_lt},
     'date-ge=s' => \$settings{date_ge},
     'date-le=s' => \$settings{date_le},
     'title=s' => \$settings{title},
-) or die "Error parsing command line arguments\n";
+) or usage();
+usage() if $help;
 $settings{date_ge} = print_to_tj_format($settings{date_ge});
 $settings{date_le} = print_to_tj_format($settings{date_le});
 
@@ -163,6 +169,8 @@ foreach my $file (@files) {
 
 my @sorted = sort { $data{$b}{sum} <=> $data{$a}{sum} } keys %data;
 if ($settings{fmt} eq 'txt') {
+    print "$settings{title}\n" if $settings{title}; 
+    print "CALL Event Analysis\n";
     printf "Period: %s - %s\n", tj_to_print_format($date_min), tj_to_print_format($date_max);
     printf "Total count: %d;Total CPU: %d\n", $total_count, $total_cpu;
     print "Description;Count;Cpu;Cpu %;Cpu cumulative %\n";
