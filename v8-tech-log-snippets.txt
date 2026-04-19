@@ -1,0 +1,5 @@
+Превращаем событие в ТЖ в однострочное для всех файлов в каталоге с добавлением временной метки из имени файла в каждой строке (выполнять последовательно)
+find <catalog> -name '*.log' -exec perl -i -pe 'if($.==1){s/^\xEF\xBB\xBF//}' {} \;
+find <catalog> -name '*.log' -exec perl -i -ne 'if($.==1){($ts)=$ARGV=~/(\d{8})/};if(/^\d\d:\d\d\.\d{6}-/){$b=~s/\r/\x01/g;$b=~s/\n/\x02/g;print "$ts:$b$p" if$p;$b=""}else{$b.=$p
+};$p=$_;if(eof){$b=~s/\r/\x01/g;$b=~s/\n/\x02/g;print "$ts:$b$p"}' {} \;
+
