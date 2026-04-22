@@ -15,7 +15,6 @@
 | `--date-le=DATE` | End date (inclusive). Format: `DD-MM-YY HH:MM` | No filter |
 | `--title=TITLE` | Title | Empty (all titles) |
 
-
 # Методика обработки технологического журнала 1С
 
 ## Шаг 1. Удаление BOM (Byte Order Mark)
@@ -30,5 +29,5 @@ find /home/sdf1979/v8_tech_log/JMR/1c_log/ -name '*.log' -exec perl -i -ne 'if($
 
 ## Шаг 3. Формирование данных за необходимый период
 ```bash
-perl <>/call.pl --dir /home/sdf1979/v8_tech_log/JMR/1c_log --fmt=html --title JMR --cpu-cum-lt 80 --date-ge '20-04-26 03:00' --date-le '20-04-26 06:00' > /home/sdf1979/v8_tech_log/night.html
+perl /home/sdf1979/v8-tech-log-parser/call.pl --dir /home/sdf1979/v8_tech_log/JMR/1c_log --fmt=html --title JMR --cpu-cum-lt 80 --date-ge '20-04-26 03:00' --date-le '20-04-26 06:00' > /home/sdf1979/v8_tech_log/night.html
 ```
