@@ -65,13 +65,13 @@ sub usage {
 Usage: $0 [options]
 
 Options:
-  --help              Show this help message
+  --help              Show help message
   --dir=DIR           Directory to search (default: .)
   --fmt=FORMAT        File format: txt, html (default: txt)
   --cpu-cum-lt=FLOAT  Max CPU cumulative value (default: 100.0)
   --date-ge=DATE      Start date, format: DD-MM-YY HH:MM (default: no filter)
   --date-le=DATE      End date, format: DD-MM-YY HH:MM (default: no filter)
-  --title=TITLE       Title filter (default: empty)
+  --title=TITLE       Title (default: empty)
 
 Examples:
   $0 --dir=/var/log --fmt=txt --cpu-cum-lt=80
